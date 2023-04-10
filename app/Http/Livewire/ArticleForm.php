@@ -7,21 +7,35 @@ use Livewire\Component;
 
 class ArticleForm extends Component
 {
-    public $title;
-    public $content;
+    /**
+     * Usando el modelo como tipado evitamos
+     * tener que escribir todas las propiedades
+     * que necesitamos.
+     *
+     * @var Article
+     */
+    public Article $article;
 
     protected $rules = [
-        'title' => ['required', 'min:4'],
-        'content' => ['required']
+        # modelo.propiedad
+        'article.title' => ['required', 'min:4'],
+        'article.content' => ['required']
     ];
 
-    /**
-     * Esta función toma como parámetro el nombre
-     * del campo que estamos modificando
-     *
-     * @param [string] $propertyName
-     * @return void
-     */
+    public function mount(Article $article)
+    {
+        /**
+         * Inicializamos una nueva instancia de nuestro modelo
+         * ya que si no lo hacemos podríamos tener un error por
+         * tratar de acceder a una propiedad sin antes inicializar
+         * una instancia del modelo
+         */
+        // $this->article = new Article;
+
+        # Pasamos en el mount el tipo de dato
+        $this->article = $article;
+    }
+
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName);
@@ -29,25 +43,13 @@ class ArticleForm extends Component
 
     public function save()
     {
-        # Validamos de la misma forma que con blade
-        // $this->validate([
-        //     'title' => ['required'],
-        //     'content' => ['required'],
-        // ]);
+        # Validaciones del formulario
+        $this->validate();
 
-        # Guardando información creando una nueva instancia
-        // $article = new Article;
+        # Guardamos la información
+        $this->article->save();
 
-        // $article->title = $this->title;
-        // $article->content = $this->content;
-        // $article->save();
-
-        # Esto devuelve todas las propiedades a su valor inicial
-        // $this->reset();
-
-        Article::create($this->validate());
-
-        session()->flash('status', __('Article created'));
+        session()->flash('status', __('Article saved'));
 
         $this->redirectRoute('articles.index');
     }
