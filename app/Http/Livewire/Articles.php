@@ -18,7 +18,7 @@ class Articles extends Component
          * El método layout nos permite renderizar solo la vista
          */
         return view('livewire.articles', [
-            $this->articles = \App\Models\Article::where('title', 'like', "%{$this->search}%")->get()
+            $this->articles = \App\Models\Article::where('title', 'like', "%{$this->search}%")->latest()->get()
         ]);
     }
 }

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
     use HasFactory;
+
+    # Cuál es el significado de esta línea
+    protected $guarded = [];
 }

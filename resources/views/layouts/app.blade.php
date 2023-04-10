@@ -7,8 +7,18 @@
         <title>Livewire</title>
 
         <livewire:styles />
+
+        <style>
+            label {
+                display: block;
+            }
+        </style>
     </head>
     <body class="antialiased">
+
+        @if (session('status'))
+            <div>{{ session('status') }}</div>
+        @endif
 
         {{ $slot }}
 
