@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Livewire;
 
+use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -9,6 +10,16 @@ use Tests\TestCase;
 class ArticleFormTest extends TestCase
 {
     use RefreshDatabase;
+
+    function test_article_form_renders_properly()
+    {
+        $this->get(route('articles.create'))->assertSeeLivewire('article-form');
+
+        $article = Article::factory()->create();
+
+        $this->get(route('articles.edit', $article))
+            ->assertSeeLivewire('article-form');
+    }
 
     function test_can_create_new_articles()
     {
@@ -23,6 +34,27 @@ class ArticleFormTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'New article',
             'content' => 'Article content'
+        ]);
+    }
+
+    function test_can_update_articles()
+    {
+        $article = Article::factory()->create();
+
+        Livewire::test('article-form', ['article' => $article])
+            ->assertSet('article.title', $article->title)
+            ->assertSet('article.content', $article->content)
+            ->set('article.title', 'Updated title')
+            ->call('save')
+            ->assertSessionHas('status')
+            ->assertRedirect(route('articles.index'))
+        ;
+
+        # Verificamos que solo se cree un registro
+        $this->assertDatabaseCount('articles', 1);
+
+        $this->assertDatabaseHas('articles', [
+            'title' => 'Updated title'
         ]);
     }
 
