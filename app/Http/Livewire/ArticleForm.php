@@ -19,7 +19,8 @@ class ArticleForm extends Component
     protected $rules = [
         # modelo.propiedad
         'article.title' => ['required', 'min:4'],
-        'article.content' => ['required']
+        'article.slug' => ['required', 'unique:articles,slug'],
+        'article.content' => ['required'],
     ];
 
     public function mount(Article $article)
