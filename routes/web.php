@@ -6,13 +6,17 @@ use App\Http\Livewire\ArticleShow;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Articles::class)
-    ->name('articles.index');
+    ->name('articles.index')
+;
 
 Route::get('/blog/crear', ArticleForm::class)
-    ->name('articles.create');
+    ->name('articles.create')
+;
 
 Route::get('/blog/{article}', ArticleShow::class)
-    ->name('articles.show');
+    ->name('articles.show')
+;
 
 Route::get('/blog/{article}/edit', ArticleForm::class)
-    ->name('articles.edit');
+    ->name('articles.edit')
+;

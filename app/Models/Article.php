@@ -11,4 +11,9 @@ class Article extends Model
 
     # Cuál es el significado de esta línea
     protected $guarded = [];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

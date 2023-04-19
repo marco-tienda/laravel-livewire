@@ -86,6 +86,7 @@ class ArticleFormTest extends TestCase
     {
         Livewire::test('article-form')
             ->set('article.title', 'New title')
+            ->set('article.slug', null)
             ->set('article.content', 'Article content')
             ->call('save')
             ->assertHasErrors(['article.slug' => 'required']) # Hacemos que verifique el error de acuerdo a las validaciones
@@ -107,17 +108,28 @@ class ArticleFormTest extends TestCase
         ;
     }
 
+    function test_slug_must_only_contain_letters_numbers_dashes_and_underscores()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', 'New title')
+            ->set('article.slug', 'new-article#$%&')
+            ->set('article.content', 'Article content')
+            ->call('save')
+            ->assertHasErrors(['article.slug' => 'alpha_dash']) # Hacemos que verifique el error de acuerdo a las validaciones
+            ->assertSeeHtml(__('validation.alpha_dash', ['attribute' => 'slug']))
+        ;
+    }
+
     function test_unique_rule_should_be_ignored_when_updating_the_same_slug()
     {
         $article = Article::factory()->create();
 
-        Livewire::test('article-form')
+        Livewire::test('article-form', ['article' => $article])
             ->set('article.title', 'New title')
             ->set('article.slug', $article->slug)
             ->set('article.content', 'Article content')
             ->call('save')
-            ->assertHasErrors(['article.slug' => 'unique']) # Hacemos que verifique el error de acuerdo a las validaciones
-            ->assertSeeHtml(__('validation.unique', ['attribute' => 'slug']))
+            ->assertHasNoErrors(['article.slug' => 'unique']) # Hacemos que verifique el error de acuerdo a las validaciones
         ;
     }
 
@@ -159,6 +171,14 @@ class ArticleFormTest extends TestCase
             ->assertHasErrors(['article.content' => 'required'])
             ->set('article.content', 'Article content')
             ->assertHasNoErrors('article.content')
+        ;
+    }
+
+    function test_slug_is_generated_automatically()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', 'Nuevo titulo')
+            ->assertSet('article.slug', 'nuevo-titulo')
         ;
     }
 }
