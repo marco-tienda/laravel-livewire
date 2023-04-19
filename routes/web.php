@@ -11,6 +11,7 @@ Route::get('/', Articles::class)
 
 Route::get('/blog/crear', ArticleForm::class)
     ->name('articles.create')
+    ->middleware('auth')
 ;
 
 Route::get('/blog/{article}', ArticleShow::class)
@@ -19,4 +20,7 @@ Route::get('/blog/{article}', ArticleShow::class)
 
 Route::get('/blog/{article}/edit', ArticleForm::class)
     ->name('articles.edit')
+    ->middleware('auth')
 ;
+
+Route::get('login')->name('login');
