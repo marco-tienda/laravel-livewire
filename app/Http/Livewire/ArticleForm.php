@@ -66,13 +66,13 @@ class ArticleForm extends Component
         # Validaciones del formulario
         $this->validate();
 
-        Auth::user()->articles()->save($this->article);
+        // Auth::user()->articles()->save($this->article);
 
         /**
          * Equivalente a la línea de arriba
          */
-        # $this->article->user_id = auth()->id();
-        # $this->article->save();
+        $this->article->user_id = auth()->id();
+        $this->article->save();
 
         session()->flash('status', __('Article saved'));
 

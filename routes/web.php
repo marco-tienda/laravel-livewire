@@ -23,4 +23,14 @@ Route::get('/blog/{article}/edit', ArticleForm::class)
     ->middleware('auth')
 ;
 
-Route::get('login')->name('login');
+// Route::get('login')->name('login');
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
