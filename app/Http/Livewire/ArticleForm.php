@@ -3,7 +3,6 @@
 namespace App\Http\Livewire;
 
 use App\Models\Article;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
