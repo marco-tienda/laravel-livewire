@@ -13,10 +13,6 @@
 
                 <x-slot name="form">
                     <div class="col-span-6 sm:col-span-4">
-
-                        <pre>{{ $article->title }}</pre>
-                        <pre>{{ $article->content }}</pre>
-
                         <x-label :value="__('Title')" for="title"></x-label>
                         <x-input wire:model="article.title" type="text" id="title" class="mt-1 block w-full" />
                         <x-input-error for="article.title" class="mt-2" />
