@@ -13,6 +13,10 @@
 
                 <x-slot name="form">
                     <div class="col-span-6 sm:col-span-4">
+
+                        <pre>{{ $article->title }}</pre>
+                        <pre>{{ $article->content }}</pre>
+
                         <x-label :value="__('Title')" for="title"></x-label>
                         <x-input wire:model="article.title" type="text" id="title" class="mt-1 block w-full" />
                         <x-input-error for="article.title" class="mt-2" />
@@ -26,7 +30,7 @@
 
                     <div class="col-span-6 sm:col-span-4">
                         <x-label :value="__('Content')" for="content"></x-label>
-                        <x-textarea wire:model="article.content" id="content" class="mt-1 block w-full" />
+                        <x-html-editor wire:model="article.content" id="content" class="mt-1 block w-full" />
                         <x-input-error for="article.content" class="mt-2" />
                     </div>
 
