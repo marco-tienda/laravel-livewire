@@ -3,12 +3,16 @@
 namespace App\Http\Livewire;
 
 use App\Models\Article;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Livewire\WithFileUploads;
 
 class ArticleForm extends Component
 {
+    use WithFileUploads;
+
     /**
      * Usando el modelo como tipado evitamos
      * tener que escribir todas las propiedades
@@ -17,10 +21,12 @@ class ArticleForm extends Component
      * @var Article
      */
     public Article $article;
+    public $image;
 
     protected function rules()
     {
         return [
+            'image' => ['image', 'max:2048'],
             'article.title' => ['required', 'min:4'],
             'article.slug' => [
                 'required',
@@ -31,10 +37,6 @@ class ArticleForm extends Component
             'article.content' => ['required'],
         ];
     }
-
-    // protected $rules = [
-    //     # modelo.propiedad
-    // ];
 
     public function mount(Article $article)
     {
@@ -62,20 +64,55 @@ class ArticleForm extends Component
 
     public function save()
     {
-        # Validaciones del formulario
+        /**
+         * Validaciones
+         */
         $this->validate();
 
-        // Auth::user()->articles()->save($this->article);
+        /**
+         * Si existe una imagen cargandose
+         * Almacenamos el path de donde se está
+         * almacenando nuestra imagen y guardamos la misma
+         * en el disco indicado.
+         */
+        if ($this->image) {
+            $this->article->image = $this->uploadImage();
+        }
 
         /**
-         * Equivalente a la línea de arriba
+         * Almacenamos el id del usuario autenticado
+         * para que este tenga acceso a los articulos
+         * creados por el mismo
          */
         $this->article->user_id = auth()->id();
+        // $this->article->user_id = Auth::user()->id;
+
+        /**
+         * Guardamos los valores del articulo que
+         * vienen desde el formulario
+         */
         $this->article->save();
 
+        /**
+         * Enviamos una variable de session para
+         * confirmar que los datos se han guardado
+         * correctamente.
+         */
         session()->flash('status', __('Article saved'));
 
+        /**
+         * Reedirigimos al panel principal
+         */
         $this->redirectRoute('articles.index');
+    }
+
+    protected function uploadImage()
+    {
+        if ($oldImage = $this->article->image) {
+            Storage::disk('public')->delete($oldImage);
+        }
+
+        return $this->image->store('/', 'public');
     }
 
     public function render()

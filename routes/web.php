@@ -6,24 +6,18 @@ use App\Http\Livewire\ArticleShow;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Articles::class)
-    ->name('articles.index')
-;
+    ->name('articles.index');
 
 Route::get('/blog/crear', ArticleForm::class)
     ->name('articles.create')
-    ->middleware('auth')
-;
+    ->middleware('auth');
 
 Route::get('/blog/{article}', ArticleShow::class)
-    ->name('articles.show')
-;
+    ->name('articles.show');
 
 Route::get('/blog/{article}/edit', ArticleForm::class)
     ->name('articles.edit')
-    ->middleware('auth')
-;
-
-// Route::get('login')->name('login');
+    ->middleware('auth');
 
 Route::middleware([
     'auth:sanctum',
