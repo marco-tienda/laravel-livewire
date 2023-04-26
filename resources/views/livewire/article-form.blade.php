@@ -13,8 +13,7 @@
 
                 <x-slot name="form">
                     <div class="col-span-6 sm:col-span-4">
-                        <x-label :value="__('Image')" for="image"></x-label>
-                        <x-input wire:model="image" type="file" id="image" class="mt-1 block w-full" />
+                        <x-select-image wire:model="image" :image="$image" :existing="$article->image" />
                         <x-input-error for="image" class="mt-2" />
                     </div>
 
