@@ -2,13 +2,14 @@
 
 namespace Tests\Feature\Livewire;
 
-use App\Models\Article;
+use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use App\Models\Article;
+use App\Models\Category;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Livewire;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleFormTest extends TestCase
 {
@@ -61,11 +62,14 @@ class ArticleFormTest extends TestCase
 
         $user = User::factory()->create();
 
+        $category = Category::factory()->create();
+
         Livewire::actingAs($user)->test('article-form')
             ->set('image', $image)
             ->set('article.title', 'New article')
             ->set('article.slug', 'new-article')
             ->set('article.content', 'Article content')
+            ->set('article.category_id', $category->id)
             ->call('save')
             ->assertSessionHas('status')
             ->assertRedirect(route('articles.index'));
@@ -75,6 +79,7 @@ class ArticleFormTest extends TestCase
             'title' => 'New article',
             'slug' => 'new-article',
             'content' => 'Article content',
+            'category_id' => $category->id,
             'user_id' => $user->id
         ]);
 
@@ -185,6 +190,30 @@ class ArticleFormTest extends TestCase
             ->call('save')
             ->assertHasErrors(['article.slug' => 'required']) # Hacemos que verifique el error de acuerdo a las validaciones
             ->assertSeeHtml(__('validation.required', ['attribute' => 'slug']));
+    }
+
+    function test_category_is_required()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', 'New title')
+            ->set('article.slug', 'new-title')
+            ->set('article.content', 'Article content')
+            ->set('article.category_id', null)
+            ->call('save')
+            ->assertHasErrors(['article.category_id' => 'required']) # Hacemos que verifique el error de acuerdo a las validaciones
+            ->assertSeeHtml(__('validation.required', ['attribute' => 'category id']));
+    }
+
+    function test_category_must_exist_in_database()
+    {
+        Livewire::test('article-form')
+            ->set('article.title', 'New title')
+            ->set('article.slug', 'new-title')
+            ->set('article.content', 'Article content')
+            ->set('article.category_id', 1)
+            ->call('save')
+            ->assertHasErrors(['article.category_id' => 'exists']) # Hacemos que verifique el error de acuerdo a las validaciones
+            ->assertSeeHtml(__('validation.exists', ['attribute' => 'category id']));
     }
 
     function test_slug_must_be_unique()

@@ -30,6 +30,12 @@
                     </div>
 
                     <div class="col-span-6 sm:col-span-4">
+                        <x-label :value="__('Category')" for="slug"></x-label>
+                        <x-select wire:model="article.category_id" :options="$categories" :placeholder="__('Select a Category')" id="category_id" class="mt-1 block w-full" />
+                        <x-input-error for="article.category_id" class="mt-2" />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-4">
                         <x-label :value="__('Content')" for="content"></x-label>
                         <x-html-editor wire:model="article.content" id="content" class="mt-1 block w-full" />
                         <x-input-error for="article.content" class="mt-2" />
