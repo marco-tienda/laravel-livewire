@@ -31,7 +31,20 @@
 
                     <div class="col-span-6 sm:col-span-4">
                         <x-label :value="__('Category')" for="slug"></x-label>
-                        <x-select wire:model="article.category_id" :options="$categories" :placeholder="__('Select a Category')" id="category_id" class="mt-1 block w-full" />
+                        <div class="flex space-x-2 mt-1">
+                            <x-select
+                                wire:model="article.category_id"
+                                :options="$categories"
+                                :placeholder="__('Select a Category')"
+                                id="category_id"
+                                class="block w-full"
+                            />
+                            <x-secondary-button class="!p-2.5" wire:click="openCategoryForm">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                            </x-secondary-button>
+                        </div>
                         <x-input-error for="article.category_id" class="mt-2" />
                     </div>
 
@@ -49,4 +62,38 @@
             </x-form-section>
         </div>
     </div>
+
+    <x-modal wire:model="showCategoryModal">
+        <form wire:submit.prevent="saveNewCategory">
+            <div class="px-6 py-4">
+                <pre>{{ $newCategory }}</pre>
+                <div class="text-lg font-medium text-gray-900">
+                    {{ __('New Category') }}
+                </div>
+
+                <div class="mt-4 text-sm text-gray-600 space-y-2">
+                    <div class="col-span-6 sm:col-span-4">
+                        <x-label :value="__('Name')" for="new-category-name"></x-label>
+                        <x-input wire:model="newCategory.name" type="text" id="new-category-name" class="mt-1 block w-full" />
+                        <x-input-error for="newCategory.name" class="mt-2" />
+                    </div>
+
+                    <div class="col-span-6 sm:col-span-4">
+                        <x-label :value="__('Slug')" for="new-category-slug"></x-label>
+                        <x-input wire:model="newCategory.slug" type="text" id="new-category-slug" class="mt-1 block w-full" />
+                        <x-input-error for="newCategory.slug" class="mt-2" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="flex flex-row justify-end px-6 py-4 bg-gray-100 text-right space-x-2">
+                <x-button>
+                    {{ __('Submit') }}
+                </x-button>
+                <x-secondary-button wire:click="closeCategoryForm">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+            </div>
+        </form>
+    </x-modal>
 </div>

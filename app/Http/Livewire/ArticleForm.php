@@ -17,6 +17,34 @@ class ArticleForm extends Component
     public Article $article;
     public $image;
 
+    public $newCategory;
+
+    public $showCategoryModal = false;
+
+    public function openCategoryForm()
+    {
+        $this->newCategory = new Category;
+        $this->showCategoryModal = true;
+    }
+
+    public function closeCategoryForm()
+    {
+        $this->showCategoryModal = false;
+        $this->newCategory = null;
+    }
+
+    public function saveNewCategory()
+    {
+        # Guardamos la categoria nueva
+        $this->newCategory->save();
+
+        # Establecemos el valor de la categoria recien creada
+        $this->article->category_id = $this->newCategory->id;
+
+        # Cerramos el modal
+        $this->closeCategoryForm();
+    }
+
     protected function rules()
     {
         return [
@@ -35,6 +63,8 @@ class ArticleForm extends Component
                 'required',
                 Rule::exists('categories', 'id')
             ],
+            'newCategory.name' => [],
+            'newCategory.slug' => [],
         ];
     }
 
@@ -51,6 +81,11 @@ class ArticleForm extends Component
     public function updatedArticleTitle($title)
     {
         $this->article->slug = Str::slug($title);
+    }
+
+    public function updatedNewCategoryName($name)
+    {
+        $this->newCategory->slug = Str::slug($name);
     }
 
     public function save()
@@ -82,7 +117,7 @@ class ArticleForm extends Component
     public function render()
     {
         return view('livewire.article-form', [
-            'categories' => Category::pluck('category', 'id')
+            'categories' => Category::pluck('name', 'id')
         ]);
     }
 }
