@@ -66,7 +66,6 @@
     <x-modal wire:model="showCategoryModal">
         <form wire:submit.prevent="saveNewCategory">
             <div class="px-6 py-4">
-                <pre>{{ $newCategory }}</pre>
                 <div class="text-lg font-medium text-gray-900">
                     {{ __('New Category') }}
                 </div>
