@@ -4,16 +4,17 @@ namespace App\Http\Livewire;
 
 use App\Models\Article;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class ArticlesTable extends Component
 {
-    public $articles;
+    use WithPagination;
+
     public $search = "";
 
     public function render()
     {
-        return view('livewire.articles-table', [
-            $this->articles = Article::where('title', 'like', "%{$this->search}%")->latest()->get()
-        ])->layout('layouts.guest');
+        $articles = Article::where('title', 'like', "%{$this->search}%")->latest()->paginate(10);
+        return view('livewire.articles-table', compact('articles'));
     }
 }
