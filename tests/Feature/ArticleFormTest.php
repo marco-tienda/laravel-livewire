@@ -30,7 +30,9 @@ class ArticleFormTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user)->get(route('articles.create'))->assertSeeLivewire('article-form');
+        $this->actingAs($user)->get(route('articles.create'))
+            ->assertSeeLivewire('article-form')
+            ->assertDontSeeText(__('Delete'));
 
         $article = Article::factory()->create();
 
@@ -111,6 +113,31 @@ class ArticleFormTest extends TestCase
             'slug' => 'updated-slug',
             'user_id' => $user->id,
         ]);
+    }
+
+    function test_can_delete_articles()
+    {
+        Storage::fake();
+
+        $imagePath = UploadedFile::fake()
+            ->image('image.png')
+            ->store('/', 'public');
+
+        $article = Article::factory()->create([
+            'image' => $imagePath
+        ]);
+
+        $user = User::factory()->create();
+
+        Livewire::actingAs($user)->test('article-form', ['article' => $article])
+            ->call('delete')
+            ->assertSessionHas('status')
+            ->assertRedirect(route('articles.index'))
+        ;
+
+        Storage::disk('public')->assertMissing($imagePath);
+
+        $this->assertDatabaseCount('articles', 0);
     }
 
     function test_can_update_articles_image()

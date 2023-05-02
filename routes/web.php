@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Livewire\ArticleForm;
-use App\Http\Livewire\Articles;
 use App\Http\Livewire\ArticleShow;
+use App\Http\Livewire\ArticlesTable;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', Articles::class)
+Route::get('/', ArticlesTable::class)
     ->name('articles.index');
 
 Route::get('/blog/crear', ArticleForm::class)

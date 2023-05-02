@@ -21,6 +21,8 @@ class ArticleForm extends Component
 
     public $showCategoryModal = false;
 
+    public $showDeleteModal = false;
+
     public function openCategoryForm()
     {
         $this->newCategory = new Category;
@@ -113,6 +115,17 @@ class ArticleForm extends Component
         session()->flash('status', __('Article saved'));
 
         $this->redirectRoute('articles.index');
+    }
+
+    public function delete()
+    {
+        Storage::disk('public')->delete($this->article->image);
+
+        $this->article->delete();
+
+        session()->flash('status', __('Article deleted'));
+
+        $this->redirect(route('articles.index'));
     }
 
     protected function uploadImage()
