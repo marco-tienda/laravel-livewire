@@ -14,7 +14,7 @@
         </div>
 
         <section class="antialiased bg-gray-100 text-gray-600">
-            <div class="flex flex-col justify-center mt-10">
+            <div class="flex flex-col justify-center mt-5">
                 <!-- Table -->
                 <div class="w-full mx-auto bg-white shadow-lg rounded-md border border-gray-200">
                     <div class="p-3">
