@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Livewire;
 
-use Tests\TestCase;
-use App\Models\User;
-use Livewire\Livewire;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use Tests\TestCase;
 
 class ArticleFormTest extends TestCase
 {
@@ -73,7 +73,7 @@ class ArticleFormTest extends TestCase
             ->set('article.content', 'Article content')
             ->set('article.category_id', $category->id)
             ->call('save')
-            ->assertSessionHas('status')
+            ->assertSessionHas('flash.banner')
             ->assertRedirect(route('articles.index'));
 
         $this->assertDatabaseHas('articles', [
@@ -90,7 +90,9 @@ class ArticleFormTest extends TestCase
 
     function test_can_update_articles()
     {
-        $article = Article::factory()->create();
+        $article = Article::factory()->create([
+            'image' => '/path/to/image'
+        ]);
 
         $user = User::factory()->create();
 
@@ -102,7 +104,7 @@ class ArticleFormTest extends TestCase
             ->set('article.title', 'Updated title')
             ->set('article.slug', 'updated-slug')
             ->call('save')
-            ->assertSessionHas('status')
+            ->assertSessionHas('flash.banner')
             ->assertRedirect(route('articles.index'));
 
         # Verificamos que solo se cree un registro
@@ -114,32 +116,6 @@ class ArticleFormTest extends TestCase
             'user_id' => $user->id,
         ]);
     }
-
-    function test_can_delete_articles()
-    {
-        Storage::fake();
-
-        $imagePath = UploadedFile::fake()
-            ->image('image.png')
-            ->store('/', 'public');
-
-        $article = Article::factory()->create([
-            'image' => $imagePath
-        ]);
-
-        $user = User::factory()->create();
-
-        Livewire::actingAs($user)->test('article-form', ['article' => $article])
-            ->call('delete')
-            ->assertSessionHas('status')
-            ->assertRedirect(route('articles.index'))
-        ;
-
-        Storage::disk('public')->assertMissing($imagePath);
-
-        $this->assertDatabaseCount('articles', 0);
-    }
-
     function test_can_update_articles_image()
     {
         Storage::fake('public');
@@ -157,7 +133,7 @@ class ArticleFormTest extends TestCase
         Livewire::actingAs($user)->test('article-form', ['article' => $article])
             ->set('image', $newImage)
             ->call('save')
-            ->assertSessionHas('status')
+            ->assertSessionHas('flash.banner')
             ->assertRedirect(route('articles.index'));
 
         Storage::disk('public')

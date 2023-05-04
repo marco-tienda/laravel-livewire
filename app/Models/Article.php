@@ -13,6 +13,10 @@ class Article extends Model
     # Cuál es el significado de esta línea
     protected $guarded = [];
 
+    /**
+     * Summary of getRouteKeyName
+     * @return string
+     */
     public function getRouteKeyName()
     {
         return 'slug';

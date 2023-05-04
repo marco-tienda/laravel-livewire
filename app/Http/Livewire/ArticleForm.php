@@ -110,7 +110,7 @@ class ArticleForm extends Component
 
         $this->article->save();
 
-        session()->flash('status', __('Article saved'));
+        session()->flash('flash.banner', __('Article saved'));
 
         $this->redirectRoute('articles.index');
     }
